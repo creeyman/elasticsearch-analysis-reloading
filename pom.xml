@@ -3,4 +3,11 @@
   <groupId>com.hichao</groupId>
   <artifactId>elasticsearch-analyzer-reloading</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.elasticsearch</groupId>
+  		<artifactId>elasticsearch</artifactId>
+  		<version>1.3.2</version>
+  	</dependency>
+  </dependencies>
 </project>
