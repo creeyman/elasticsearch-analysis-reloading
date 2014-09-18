@@ -29,47 +29,47 @@ public class ListReloadablesHandlerRestAction extends BaseRestHandler {
     protected void handleRequest(RestRequest request, RestChannel channel,
             Client client) throws Exception {
 
-            try {
+        try {
 
-                XContentBuilder builder = XContentFactory.jsonBuilder();
+            XContentBuilder builder = XContentFactory.jsonBuilder();
+            builder.startObject();
+            builder.field("ok", true);
+            builder.startArray("reloadables");
+            for (Reloadable reloadable : Reloadables.getReloadables()) {
                 builder.startObject();
-                builder.field("ok", true);
-                builder.startArray("reloadables");
-                for (Reloadable reloadable : Reloadables.getReloadables()) {
-                    builder.startObject();
-                    builder.field("type", reloadable.getClass().getName());
-                    builder.endObject();
-                }
-                builder.endArray();
+                builder.field("type", reloadable.getClass().getName());
                 builder.endObject();
-                
-                channel.sendResponse(new BytesRestResponse(RestStatus.OK, builder));
-                
-            } catch (Exception e) {
-
-                XContentBuilder builder = XContentFactory.jsonBuilder()
-                .startObject()
-                .field("ok", false)
-                .field("reason", e.getMessage())
-                .endObject();
-                
-                channel.sendResponse(new BytesRestResponse(RestStatus.INTERNAL_SERVER_ERROR, builder));
             }
+            builder.endArray();
+            builder.endObject();
+
+            channel.sendResponse(new BytesRestResponse(RestStatus.OK, builder));
+
+        } catch (Exception e) {
+
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("ok", false)
+                    .field("reason", e.getMessage())
+                    .endObject();
+
+            channel.sendResponse(new BytesRestResponse(RestStatus.INTERNAL_SERVER_ERROR, builder));
+        }
 
     }
-    
-//    private List<Analyzer> getAnalyzers(String analyzerName){
-//        List<Analyzer> analyzers = new ArrayList<Analyzer>();
-//        Iterator<IndexService> a = indicesService.iterator();
-//        while (a.hasNext()) {
-//            IndexService indexService = (IndexService) a.next();
-//            Analyzer analyzer = indexService.analysisService().analyzer(analyzerName).analyzer();
-//            if (!analyzers.contains(analyzer)){
-//                analyzers.add(analyzer);
-//            }
-//        }
-//        return analyzers;
-//    }
+
+    //    private List<Analyzer> getAnalyzers(String analyzerName){
+    //        List<Analyzer> analyzers = new ArrayList<Analyzer>();
+    //        Iterator<IndexService> a = indicesService.iterator();
+    //        while (a.hasNext()) {
+    //            IndexService indexService = (IndexService) a.next();
+    //            Analyzer analyzer = indexService.analysisService().analyzer(analyzerName).analyzer();
+    //            if (!analyzers.contains(analyzer)){
+    //                analyzers.add(analyzer);
+    //            }
+    //        }
+    //        return analyzers;
+    //    }
 
 
 }

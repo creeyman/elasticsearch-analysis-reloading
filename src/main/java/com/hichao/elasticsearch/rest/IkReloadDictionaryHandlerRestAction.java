@@ -12,17 +12,15 @@ import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestController;
 import org.elasticsearch.rest.RestRequest;
 import org.elasticsearch.rest.RestStatus;
+import org.wltea.analyzer.dic.Dictionary;
 
-import com.hichao.elasticsearch.analysis.reloading.Reloadables;
-
-public class ReloadReloadablesHandlerRestAction extends BaseRestHandler {
+public class IkReloadDictionaryHandlerRestAction extends BaseRestHandler {
 
     @Inject
-    protected ReloadReloadablesHandlerRestAction(Settings settings, Client client, RestController restController, IndicesService indicesService) {
+    protected IkReloadDictionaryHandlerRestAction(Settings settings, Client client, RestController restController, IndicesService indicesService) {
         super(settings, client);
 
-        restController.registerHandler(RestRequest.Method.GET, "/_reloadables/reload", this);
-
+        restController.registerHandler(RestRequest.Method.GET, "/_ik/reload", this);
     }
 
     @Override
@@ -31,7 +29,7 @@ public class ReloadReloadablesHandlerRestAction extends BaseRestHandler {
 
         try {
 
-            Reloadables.reloadAll(); 
+            Dictionary.reload();
 
             XContentBuilder builder = XContentFactory.jsonBuilder()
                     .startObject()
@@ -52,19 +50,4 @@ public class ReloadReloadablesHandlerRestAction extends BaseRestHandler {
         }
 
     }
-
-    //    private List<Analyzer> getAnalyzers(String analyzerName){
-    //        List<Analyzer> analyzers = new ArrayList<Analyzer>();
-    //        Iterator<IndexService> a = indicesService.iterator();
-    //        while (a.hasNext()) {
-    //            IndexService indexService = (IndexService) a.next();
-    //            Analyzer analyzer = indexService.analysisService().analyzer(analyzerName).analyzer();
-    //            if (!analyzers.contains(analyzer)){
-    //                analyzers.add(analyzer);
-    //            }
-    //        }
-    //        return analyzers;
-    //    }
-
-
 }

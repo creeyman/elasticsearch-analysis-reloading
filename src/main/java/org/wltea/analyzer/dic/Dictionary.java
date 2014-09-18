@@ -84,19 +84,28 @@ public class Dictionary {
 		if(singleton == null){
 			synchronized(Dictionary.class){
 				if(singleton == null){
-					singleton = new Dictionary();
-                    singleton.configuration=cfg;
-                    singleton.loadMainDict();
-                    singleton.loadSurnameDict();
-                    singleton.loadQuantifierDict();
-                    singleton.loadSuffixDict();
-                    singleton.loadPrepDict();
-                    singleton.loadStopWordDict();
+					singleton = buildDictionary(cfg);
                     return singleton;
 				}
 			}
 		}
 		return singleton;
+	}
+	
+	private static Dictionary buildDictionary(Configuration cfg){
+        Dictionary dic = new Dictionary();
+        dic.configuration=cfg;
+        dic.loadMainDict();
+        dic.loadSurnameDict();
+        dic.loadQuantifierDict();
+        dic.loadSuffixDict();
+        dic.loadPrepDict();
+        dic.loadStopWordDict();
+        return dic;
+	}
+	
+	public static synchronized void reload(){
+	    singleton = buildDictionary(singleton.configuration);
 	}
 	
 	/**

@@ -3,11 +3,9 @@ package com.hichao.elasticsearch.analysis.synonym;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.Analyzer.TokenStreamComponents;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.analysis.synonym.SolrSynonymParser;
-import org.apache.lucene.analysis.synonym.SynonymFilter;
 import org.apache.lucene.analysis.synonym.SynonymMap;
 import org.apache.lucene.analysis.synonym.WordnetSynonymParser;
 import org.elasticsearch.ElasticsearchIllegalArgumentException;
@@ -21,8 +19,6 @@ import org.elasticsearch.index.Index;
 import org.elasticsearch.index.analysis.*;
 import org.elasticsearch.index.settings.IndexSettings;
 import org.elasticsearch.indices.analysis.IndicesAnalysisService;
-
-import com.hichao.elasticsearch.analysis.reloading.Reloadables;
 
 import java.io.Reader;
 import java.util.List;
@@ -153,8 +149,6 @@ public class ReloadableSynonymTokenFilterFactory extends AbstractTokenFilterFact
 
     @Override
     public TokenStream create(TokenStream tokenStream) {
-        ReloadableSynonymTokenFilter tokenFilter =  new ReloadableSynonymTokenFilter(tokenStream, synonymMap, builder, ignoreCase);
-        Reloadables.register(tokenFilter);
-        return tokenFilter;
+        return new ReloadableSynonymTokenFilter(tokenStream, synonymMap, builder, ignoreCase);
     }
 }

@@ -8,12 +8,11 @@ import org.apache.lucene.store.ByteArrayDataInput;
 import org.apache.lucene.util.*;
 import org.apache.lucene.util.fst.FST;
 
-import com.hichao.elasticsearch.analysis.reloading.Reloadable;
-import com.hichao.elasticsearch.analysis.synonym.ReloadableSynonymTokenFilterFactory.SynonymMapBuilder;
-
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ReloadableSynonymTokenFilter  extends TokenFilter implements Reloadable {
+public class ReloadableSynonymTokenFilter  extends TokenFilter {
 
     public static final String TYPE_SYNONYM = "SYNONYM";
 
@@ -162,6 +161,12 @@ public class ReloadableSynonymTokenFilter  extends TokenFilter implements Reload
 
     private final BytesRef scratchBytes = new BytesRef();
     private final CharsRef scratchChars = new CharsRef();
+    
+    private final static List<ReloadableSynonymTokenFilter> INSTANCES = new ArrayList<ReloadableSynonymTokenFilter>(4);
+    
+    public static List<ReloadableSynonymTokenFilter> getInstances(){
+        return INSTANCES;
+    }
 
     /**
      * @param input input tokenstream
@@ -196,6 +201,8 @@ public class ReloadableSynonymTokenFilter  extends TokenFilter implements Reload
       //System.out.println("FSTFilt maxH=" + synonyms.maxHorizontalContext);
 
       scratchArc = new FST.Arc<>();
+      
+      INSTANCES.add(this);
     }
     
     private void capture() {
@@ -559,8 +566,7 @@ public class ReloadableSynonymTokenFilter  extends TokenFilter implements Reload
       }
     }
 
-    @Override
-    public void reload() {
+    public void reloadSynonymMap() {
         
         SynonymMap newMap;
         newMap = this.synonymMapBuilder.build();     

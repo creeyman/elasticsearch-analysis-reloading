@@ -12,17 +12,15 @@ import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestController;
 import org.elasticsearch.rest.RestRequest;
 import org.elasticsearch.rest.RestStatus;
+import com.hichao.elasticsearch.analysis.synonym.ReloadableSynonymTokenFilter;
 
-import com.hichao.elasticsearch.analysis.reloading.Reloadables;
-
-public class ReloadReloadablesHandlerRestAction extends BaseRestHandler {
+public class CountReloadableSynonymTokenFilterHandlerRestAction extends BaseRestHandler {
 
     @Inject
-    protected ReloadReloadablesHandlerRestAction(Settings settings, Client client, RestController restController, IndicesService indicesService) {
+    protected CountReloadableSynonymTokenFilterHandlerRestAction(Settings settings, Client client, RestController restController, IndicesService indicesService) {
         super(settings, client);
 
-        restController.registerHandler(RestRequest.Method.GET, "/_reloadables/reload", this);
-
+        restController.registerHandler(RestRequest.Method.GET, "/_synonyms/count", this);
     }
 
     @Override
@@ -31,11 +29,10 @@ public class ReloadReloadablesHandlerRestAction extends BaseRestHandler {
 
         try {
 
-            Reloadables.reloadAll(); 
-
             XContentBuilder builder = XContentFactory.jsonBuilder()
                     .startObject()
                     .field("ok", true)
+                    .field("count", ReloadableSynonymTokenFilter.getInstances().size())
                     .endObject();
 
             channel.sendResponse(new BytesRestResponse(RestStatus.OK, builder));
@@ -52,19 +49,4 @@ public class ReloadReloadablesHandlerRestAction extends BaseRestHandler {
         }
 
     }
-
-    //    private List<Analyzer> getAnalyzers(String analyzerName){
-    //        List<Analyzer> analyzers = new ArrayList<Analyzer>();
-    //        Iterator<IndexService> a = indicesService.iterator();
-    //        while (a.hasNext()) {
-    //            IndexService indexService = (IndexService) a.next();
-    //            Analyzer analyzer = indexService.analysisService().analyzer(analyzerName).analyzer();
-    //            if (!analyzers.contains(analyzer)){
-    //                analyzers.add(analyzer);
-    //            }
-    //        }
-    //        return analyzers;
-    //    }
-
-
 }
