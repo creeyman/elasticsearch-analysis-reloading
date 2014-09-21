@@ -119,7 +119,8 @@ public class ReloadableSynonymTokenFilterFactory extends AbstractTokenFilterFact
             Analyzer analyzer = new Analyzer() {
                 @Override
                 protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
-                    Tokenizer tokenizer = tokenizerFactory == null ? new WhitespaceTokenizer(Lucene.ANALYZER_VERSION, reader) : tokenizerFactory.create(reader);
+                    @SuppressWarnings("resource")
+					Tokenizer tokenizer = tokenizerFactory == null ? new WhitespaceTokenizer(Lucene.ANALYZER_VERSION, reader) : tokenizerFactory.create(reader);
                     @SuppressWarnings("resource")
                     TokenStream stream = ignoreCase ? new LowerCaseFilter(Lucene.ANALYZER_VERSION, tokenizer) : tokenizer;
                     return new TokenStreamComponents(tokenizer, stream);
